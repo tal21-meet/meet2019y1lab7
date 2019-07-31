@@ -1,5 +1,7 @@
 import turtle
 import random #We'll need this later in the lab
+import time
+
 
 turtle.tracer(1,0) #This helps the turtle move more smoothly
 
@@ -12,6 +14,7 @@ turtle.penup()
 SQUARE_SIZE = 20
 START_LENGTH = 6
 TIME_STEP = 100
+snake_eat = 0
 
 #Initialize lists
 pos_list = []
@@ -22,6 +25,10 @@ food_stamps = []
 #Set up positions (x,y) of boxes that make up the snake
 snake = turtle.clone()
 snake.shape("square")
+def mario ():
+    snake.shape("triangul")
+turtle.onkeypress(mario, "1")
+
 
 #Hide the turtle object (it's an arrow - we don't need to see it)
 turtle.hideturtle()
@@ -114,7 +121,7 @@ for this_food_pos in food_pos :
 
 def make_food():
     #The screen positions go from -SIZE/2 to +SIZE/2
-    #But we need to make food pieces only appear on game squares
+    #But we need to make food pieces only appear on game squaresg
     #So we cut up the game board into multiples of SQUARE_SIZE.
     min_x=-int(SIZE_X/2/SQUARE_SIZE)+1
     max_x=int(SIZE_X/2/SQUARE_SIZE)-1
@@ -125,49 +132,62 @@ def make_food():
     food_x = random.randint(min_x,max_x)*SQUARE_SIZE
     food_y = random.randint(min_y,max_y)*SQUARE_SIZE
     
-
-        ##1.WRITE YOUR CODE HERE: Make the food turtle go to the randomly-generated
-        ##                        position
     food.goto(food_x,food_y)
     rand_pos=food.stamp()
-        ##2.WRITE YOUR CODE HERE: Add the food turtle's position to the food positions list
+        ##2.
     food_pos.append(food.pos())
-        ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
-    food_stamp.append(rand.pos)
+        ##3
+    food_stamps.append(rand_pos)
 
 def move_snake():
     my_pos = snake.pos()
     x_pos = my_pos[0]
     y_pos = my_pos[1]
-    #Add this line to the end of the move_snake function
-    #<--- new line here
-
-#Now, call the move_snake() function.  This starts moving the snake.  Once it starts 
-#moving, it keeps moving by itself:
-
-    #Grab position of snake
+    
     new_pos = snake.pos()
     new_x_pos = new_pos[0]
     new_y_pos = new_pos[1]
+
     
-    
-    # The next three lines check if the snake is hitting the 
-    # right edge.
     if new_x_pos >= RIGHT_EDGE:
-         print("You hit the right edge! Game over!")
-         quit()
+        print("You hit the right edge! Game over!")
+        screen = turtle.Screen()
+        screen.setup(1000,800)
+        screen.bgpic('game.gif')
+        time.sleep(10)
+        quit()
     elif new_x_pos <= LEFT_EDGE:
-         print("You hit the left edge! Game over!")
-         quit()
+        print("You hit the left edge! Game over!")
+        screen.setup(10000,800)
+        screen.bgpic('game.gif')
+        time.sleep(10)
+        quit()
     elif new_y_pos >= UP_EDGE:
-         print("You hit the up edge! Game over!")
-         quit()
+        print("You hit the up edge! Game over!")
+        screen.setup(1000,800)
+        screen.bgpic('game.gif')
+        time.sleep(10)
+        quit()
     elif new_y_pos <= DOWN_EDGE:
-         print("You hit the down edge! Game over!")
-         quit()
+        print("You hit the down edge! Game over!")
+        screen.setup(1000,800)
+        screen.bgpic('game.gif')
+        time.sleep(10)
+        quit()
      # You should write code to check for the left, top, and bottom edges.
     #####WRITE YOUR CODE HERE
 
+    if snake.pos() in food_pos:
+        food_index=food_pos.index(snake.pos()) #What does this do?
+        food.clearstamp(food_stamps[food_index]) #Remove eaten food stamp
+        food_pos.pop(food_index) #Remove eaten food position
+        food_stamps.pop(food_index) #Remove eaten food stamp
+        print("You have eaten the food!")
+        
+    elif snake.pos() in pos_list[0:-1]:
+        quit()
+    else :
+        remove_tail()
     #If snake.direction is up, then we want the snake to change
     #it’s y position by SQUARE_SIZE
     if snake.direction == "Up":
@@ -189,10 +209,7 @@ def move_snake():
     #Hint - use a single function to do this
     new_stamp()
      #If snake is on top of food item
-
-    
     #HINT: This if statement may be useful for Part 8
-    remove_tail()
     ...
     #Don't change the rest of the code in move_snake() function:
     #If you have included the timer so the snake moves 
@@ -202,6 +219,7 @@ def move_snake():
     ######## SPECIAL PLACE - Remember it for Part 5
     if len(food_stamps) <= 6 :
         make_food()
+
     #remove the last piece of the snake (Hint Functions are FUN!)
 
 move_snake()
